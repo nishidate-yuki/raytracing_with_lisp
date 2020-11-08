@@ -8,7 +8,7 @@
     ) 
 )
 
-(defun minus (v1 v2) 
+(defun sub (v1 v2) 
     (list 
         (- (first v1) (first v2)) 
         (- (second v1) (second v2)) 
@@ -57,7 +57,7 @@
     (list 
         (list 0 0 -10)
         (norm
-            (minus 
+            (sub 
                 (list 
                     (- (* (float (/ w size)) 2) 1) 
                     (- (- (* (float (/ h size)) 2) 1))
@@ -77,8 +77,8 @@
         (setq center (second sphere))
 
         (setq a (dot raydir raydir))
-        (setq b (dot (minus rayorg center) raydir))
-        (setq c (- (dot (minus rayorg center) (minus rayorg center))
+        (setq b (dot (sub rayorg center) raydir))
+        (setq c (- (dot (sub rayorg center) (sub rayorg center))
                 (* radius radius)))
         (setq d (- (* b b) (* a c)))
 
@@ -86,7 +86,7 @@
             (progn
                 (setq dist (- (- b) (sqrt d)))
                 (setq pos (add rayorg (mul raydir dist)))
-                (setq normal (norm (minus pos center)))
+                (setq normal (norm (sub pos center)))
                 (list t normal pos)
             )
             (list nil)
@@ -108,7 +108,7 @@
                 (progn
                     (setq normal (second res))
                     (setq hitpos (third res))
-                    (setq ldir (norm (minus lightpos hitpos)))
+                    (setq ldir (norm (sub lightpos hitpos)))
                     (setq lighting (max (dot normal ldir) 0))
                     (format img "~d ~d ~d~%" (round (* 255 lighting)) (round (* 255 lighting)) (round (* 255 lighting)))
                 )
