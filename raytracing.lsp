@@ -94,6 +94,24 @@
     )
 )
 
+(defun shade (res lightpos)
+    (progn
+        (setq normal (second res))
+        (setq hitpos (third res))
+        (setq ldir (norm (sub lightpos hitpos)))
+        (setq shading (max (dot normal ldir) 0))
+        shading
+    )
+)
+
+(defun output (img color)
+    (format img "~d ~d ~d~%" (first color) (second color) (third color))
+)
+
+(defun get_background (w h)
+    (list (round (* 255 (/ w size))) (round (* 255 (/ h size))) 128)
+)
+
 (with-open-file 
     (img "img.ppm" :direction :output :if-exists :supersede :if-does-not-exist :create)
 
@@ -102,18 +120,15 @@
     (format img "P3~%~d ~d~%255~%" size size)
     (loop for h from 0 to (- size 1)
         do(loop for w from 0 to (- size 1)
-            do (setq ray (gen_ray w h))
-            do (setq res (intersect ray sphere))
+            do (setq res (intersect (gen_ray w h) sphere))
             do (if (first res)
                 (progn
-                    (setq normal (second res))
-                    (setq hitpos (third res))
-                    (setq ldir (norm (sub lightpos hitpos)))
-                    (setq lighting (max (dot normal ldir) 0))
-                    (format img "~d ~d ~d~%" (round (* 255 lighting)) (round (* 255 lighting)) (round (* 255 lighting)))
+                    (setq shading (shade res lightpos))
+                    (setq color (list (round (* 255 shading)) (round (* 255 shading)) (round (* 255 shading))))
                 )
-                (format img "~d ~d ~d~%" (round (* 255 (/ w size))) (round (* 255 (/ h size))) 128)
+                (setq color (get_background w h))
             )
+            do(output img color)
         )
     )
 )
